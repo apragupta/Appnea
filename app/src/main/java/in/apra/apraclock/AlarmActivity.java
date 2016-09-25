@@ -13,12 +13,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
  public class AlarmActivity extends AppCompatActivity {
@@ -31,7 +33,7 @@ import java.util.Calendar;
      private TextView tvMessage;
      private ToggleButton toggleButton;
      public static Ringtone ringtone=null;
-
+     private SimpleDateFormat sdf;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,16 +41,25 @@ import java.util.Calendar;
         timePicker= (TimePicker) findViewById(R.id.timePicker);
         tvMessage =(TextView)findViewById(R.id.tvMessage);
         toggleButton=(ToggleButton)findViewById(R.id.toggleButton);
+        sdf= new SimpleDateFormat("EEE, dd MMM yyyy");
 
+        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener(){
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                getFutureAlarmTimeMillis(hourOfDay,minute);
+            }
+        });
         //reload last values
         reloadLastValues();
+
     }
 
      private void reloadLastValues() {
          SharedPreferences ed= getSharedPreferences(ALARM_PREFS,MODE_PRIVATE);
          toggleButton.setChecked(ed.getBoolean(ALARM_ENABLED,false));
-         timePicker.setCurrentHour(ed.getInt(ALARM_HH,timePicker.getCurrentHour()));
-         timePicker.setCurrentMinute(ed.getInt(ALARM_HH,timePicker.getCurrentMinute()));
+         timePicker.setHour(ed.getInt(ALARM_HH,timePicker.getHour()));
+         timePicker.setMinute(ed.getInt(ALARM_MM,timePicker.getMinute()));
+
      }
 
      public void onAlarmToggle(View view)
@@ -59,13 +70,10 @@ import java.util.Calendar;
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         boolean enabled=((ToggleButton) view).isChecked();
         if (enabled) {
-            Log.d("AlarmActivity", "Alarm On");
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-            calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-            calendar.set(Calendar.SECOND,0);
-            calendar.set(Calendar.MILLISECOND,0);
-            alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+            long timeInMillis = getFutureAlarmTimeMillis(timePicker.getCurrentHour(),timePicker.getCurrentMinute());
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+
         } else {
             alarmManager.cancel(pendingIntent);
             stopPlaying();
@@ -73,6 +81,23 @@ import java.util.Calendar;
         }
         savePrefs();
     }
+
+     private long getFutureAlarmTimeMillis(int selHr, int selMin) {
+         Calendar calendar = Calendar.getInstance();
+         long now=calendar.getTimeInMillis();
+         calendar.set(Calendar.HOUR_OF_DAY, selHr);
+         calendar.set(Calendar.MINUTE, selMin);
+         calendar.set(Calendar.SECOND,0);
+         calendar.set(Calendar.MILLISECOND,0);
+         if(now>calendar.getTimeInMillis())
+         {
+             //add a day
+             calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
+         }
+         Log.d("AlarmActivity", "Alarm On "+calendar.getTime().toString());
+         tvMessage.setText("Ring Alarm On "+sdf.format(calendar.getTime())+" at");
+         return calendar.getTimeInMillis();
+     }
 
      private void stopPlaying() {
          if(ringtone!=null)
@@ -96,8 +121,8 @@ import java.util.Calendar;
      private void savePrefs() {
          SharedPreferences.Editor ed= getSharedPreferences(ALARM_PREFS,MODE_PRIVATE).edit();
          ed.putBoolean(ALARM_ENABLED,toggleButton.isChecked());
-         ed.putInt(ALARM_HH,timePicker.getCurrentHour());
-         ed.putInt(ALARM_MM,timePicker.getCurrentMinute());
+         ed.putInt(ALARM_HH,timePicker.getHour());
+         ed.putInt(ALARM_MM,timePicker.getMinute());
          ed.commit();
      }
 
