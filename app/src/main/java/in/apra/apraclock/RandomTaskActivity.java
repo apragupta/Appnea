@@ -1,5 +1,6 @@
 package in.apra.apraclock;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -139,6 +140,8 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
 
     private void passed() {
         Toast.makeText(this, "Not posting to facebook! Enjoy your day",Toast.LENGTH_LONG).show();
+        Intent goToNextActivity = new Intent(getApplicationContext(), AlarmActivity.class);
+        startActivity(goToNextActivity);
     }
 
 

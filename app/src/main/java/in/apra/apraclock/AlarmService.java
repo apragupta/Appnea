@@ -46,12 +46,10 @@ public class AlarmService extends IntentService {
 
     private void sendNotification(String msg) {
 
-                                   
         Log.d("AlarmService", "Preparing to send notification...: " + msg);
 
-
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, AlarmActivity.class), 0);
+                new Intent(this, RandomTaskActivity.class), 0);
 
         NotificationCompat.Builder alamNotificationBuilder = new NotificationCompat.Builder(
                 this).setContentTitle("Alarm").setSmallIcon(R.mipmap.ic_launcher)
