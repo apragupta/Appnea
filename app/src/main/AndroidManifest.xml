@@ -24,7 +24,7 @@
 
         <receiver android:name=".AlarmReceiver" />
 
-        <activity android:name=".RandomTaskActivity">
+        <activity android:name=".RandomTaskActivity"  android:windowSoftInputMode="stateAlwaysVisible">
             <intent-filter>
                 <action android:name="android.intent.action.RUN"/>
             </intent-filter>

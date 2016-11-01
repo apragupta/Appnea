@@ -16,7 +16,7 @@
         android:inputType="numberSigned"
         android:ems="10"
         android:id="@+id/etAnswer"
-        android:text="400"
+        android:text="Answer"
         android:typeface="serif"
         android:textSize="30sp"
         android:textAlignment="center"
@@ -25,27 +25,16 @@
         android:fontFamily="casual" />
 
     <TextView
-        android:text="TextView"
+        android:text="Question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvQuestion"
-        tools:text="20x20=?"
         android:textSize="36sp"
         android:typeface="monospace"
         android:fontFamily="casual"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="35dp" />
-
-    <Button
-        android:text="check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnCheck"
-        android:elevation="0dp"
-        android:onClick="check"
-        android:layout_below="@+id/etAnswer"
-        android:layout_centerHorizontal="true" />
 
     <Chronometer
         android:layout_width="wrap_content"
@@ -70,5 +59,14 @@
         android:isIndicator="true"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="skip"
+        android:layout_below="@+id/etAnswer"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btnSkip" />
 
 </RelativeLayout>

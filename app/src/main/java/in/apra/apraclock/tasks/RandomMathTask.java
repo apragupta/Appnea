@@ -10,9 +10,9 @@ public class RandomMathTask implements Task {
     int operator; //+, -, *
 
     public RandomMathTask(){
-        firstOp=9+(int)(90.0*Math.random());
-        secondOp=9+(int)(90.0*Math.random());
-        operator=(int)(3.0*Math.random());
+        firstOp=5+(int)(20.0*Math.random());
+        secondOp=5+(int)(20.0*Math.random());
+        operator=(int)(2.5*Math.random()); //biased against multiplications
     }
     public void init(int op1, int op2, int opType)
     {
@@ -44,7 +44,7 @@ public class RandomMathTask implements Task {
                 break;
             case 1: sb.append("-");
                 break;
-            case 2: sb.append("X");
+            case 2: sb.append("x");
                 break;
             default: throw new RuntimeException("Unknown Operator");
         }
