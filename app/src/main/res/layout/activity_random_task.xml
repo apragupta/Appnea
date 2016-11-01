@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_random_task"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="in.apra.apraclock.RandomTaskActivity">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberSigned"
+        android:ems="10"
+        android:id="@+id/etAnswer"
+        android:text="400"
+        android:typeface="serif"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:layout_below="@+id/tvQuestion"
+        android:layout_alignParentStart="true"
+        android:fontFamily="casual" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvQuestion"
+        tools:text="20x20=?"
+        android:textSize="36sp"
+        android:typeface="monospace"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp" />
+
+    <Button
+        android:text="check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnCheck"
+        android:elevation="0dp"
+        android:onClick="check"
+        android:layout_below="@+id/etAnswer"
+        android:layout_centerHorizontal="true" />
+
+    <Chronometer
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chTicker"
+        android:visibility="visible"
+        android:textSize="30sp"
+        android:countDown="true"
+        android:typeface="sans"
+        android:fontFamily="sans-serif"
+        android:enabled="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rbProgress"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="1"
+        android:isIndicator="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

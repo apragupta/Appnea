@@ -46,7 +46,7 @@ public class AlarmService extends IntentService {
 
     private void sendNotification(String msg) {
 
-
+                                   
         Log.d("AlarmService", "Preparing to send notification...: " + msg);
 
 
