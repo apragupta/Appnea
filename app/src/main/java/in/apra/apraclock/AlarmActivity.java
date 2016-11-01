@@ -62,20 +62,28 @@ import java.util.Calendar;
 
      }
 
+     protected void setAlarm(long atSystemTimeMillis,PendingIntent pendingIntent)
+     {
+         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+         alarmManager.set(AlarmManager.RTC_WAKEUP, atSystemTimeMillis, pendingIntent);
+     }
+
+     PendingIntent makePendingIntent(Class<?> recieverClass ) {
+         Intent myIntent = new Intent(AlarmActivity.this, recieverClass);
+         return PendingIntent.getBroadcast(AlarmActivity.this, 0, myIntent, 0);
+     }
+
      public void onAlarmToggle(View view)
     {
-        Intent myIntent = new Intent(AlarmActivity.this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(AlarmActivity.this, 0, myIntent, 0);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent1 = makePendingIntent(AlarmReceiver.class);
         boolean enabled=((ToggleButton) view).isChecked();
         if (enabled) {
             long timeInMillis = getFutureAlarmTimeMillis(timePicker.getCurrentHour(),timePicker.getCurrentMinute());
-
-            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-
+            setAlarm(timeInMillis, pendingIntent1);
         } else {
-            alarmManager.cancel(pendingIntent);
+            //we should clean both
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.cancel(pendingIntent1);
             stopPlaying();
             Log.d("AlarmActivity", "Alarm Off");
         }

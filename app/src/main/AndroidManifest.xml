@@ -23,6 +23,7 @@
             android:enabled="true" />
 
         <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".InsultSender" />
 
         <activity android:name=".RandomTaskActivity"  android:windowSoftInputMode="stateAlwaysVisible">
             <intent-filter>

@@ -1,5 +1,7 @@
 package in.apra.apraclock;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -140,8 +142,18 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
 
     private void passed() {
         Toast.makeText(this, "Not posting to facebook! Enjoy your day",Toast.LENGTH_LONG).show();
+
+        cancelPendingInsult();
+
         Intent goToNextActivity = new Intent(getApplicationContext(), AlarmActivity.class);
         startActivity(goToNextActivity);
+    }
+
+    private void cancelPendingInsult() {
+        Intent myIntent = new Intent(this, InsultSender.class);
+        PendingIntent p=PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(p);
     }
 
 
