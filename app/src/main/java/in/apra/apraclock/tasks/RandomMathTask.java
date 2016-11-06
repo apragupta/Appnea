@@ -4,7 +4,7 @@ package in.apra.apraclock.tasks;
  * Created by apra on 9/26/2016.
  */
 
-public class RandomMathTask implements Task {
+public class RandomMathTask {
     int firstOp;
     int secondOp;
     int operator; //+, -, *
@@ -36,21 +36,16 @@ public class RandomMathTask implements Task {
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(firstOp);
-        sb.append(" ");
         switch(operator){
-            case 0: sb.append("+");
-                break;
-            case 1: sb.append("-");
-                break;
-            case 2: sb.append("x");
-                break;
+            case 0:  return firstOp + " + " + secondOp + " = ?";
+
+            case 1: return firstOp + " - "  + secondOp + " = ?";
+
+            case 2: return firstOp + " x "  + secondOp + " = ?";
+
             default: throw new RuntimeException("Unknown Operator");
         }
-        sb.append(" ");
-        sb.append(secondOp);
-        sb.append(" = ?");
-        return sb.toString();
+
+
     }
 }

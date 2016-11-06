@@ -19,17 +19,17 @@ public class RandomTaskTest {
         //add
         rmt.init(10,20,0);
         assertTrue(rmt.checkAnswer(10+20));
-        assertEquals("10 + 20",rmt.toString());
+        assertEquals("10 + 20 = ?",rmt.toString());
 
         //subs
         rmt.init(10,20,1);
         assertTrue(rmt.checkAnswer(10-20));
-        assertEquals("10 - 20",rmt.toString());
+        assertEquals("10 - 20 = ?",rmt.toString());
 
         //mult
         rmt.init(10,20,2);
         assertTrue(rmt.checkAnswer(10*20));
-        assertEquals("10 * 20",rmt.toString());
+        assertEquals("10 x 20 = ?",rmt.toString());
 
     }
 }

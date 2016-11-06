@@ -1,7 +1,7 @@
 package in.apra.apraclock.tasks;
 
 /**
- * Created by mamigo on 11/1/2016.
+ * Created by apra on 11/1/2016.
  */
 
 public class TaskProgress {
@@ -28,7 +28,7 @@ public class TaskProgress {
     }
 
     public boolean check(int answer) {
-        attempts++;
+
         if (curTask.checkAnswer(answer)) {
             corrects++;
             return true;
