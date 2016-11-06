@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import in.apra.apraclock.tasks.TaskProgress;
 
-public class RandomTaskActivity extends AppCompatActivity implements Chronometer.OnChronometerTickListener,TextWatcher {
+public class RandomTaskActivity extends AppCompatActivity{
     TaskProgress myTaskProgress;
     RatingBar rbProgress;
     TextView tvQuestion;
@@ -48,15 +48,47 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
         wrong_step= MediaPlayer.create(this,R.raw.failed);
         sad_end= MediaPlayer.create(this,R.raw.sad_end);
 
-        chTicker.setOnChronometerTickListener(this);
-        etAnswer.addTextChangedListener(this);
+        etAnswer.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                        try {
+                            int answer = Integer.parseInt(editable.toString());
+                            check(answer);
+                        }
+                        catch(NumberFormatException nex)
+                        {
+
+                        }
+                    }
+                }
+        );
+
+        chTicker.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                if(SystemClock.elapsedRealtime()>=chronometer.getBase())
+                {
+                    done(false);
+                }
+            }
+        });
+
         init();
     }
     void init(){
         myTaskProgress = new TaskProgress(5);
         rbProgress.setNumStars(myTaskProgress.getGoal());
-        //rbProgress.getProgressDrawable().setTint(Color.RED);
+
         moveToNext();
+
         //set it to tick for next "allowSeconds" duration
         chTicker.setBase(SystemClock.elapsedRealtime()+allowSeconds*1000);
 
@@ -70,11 +102,11 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
         etAnswer.setText("");
         etAnswer.setTextColor(Color.BLUE);
     }
-    private void done(boolean passed)
+    private void done(boolean isPassed)
     {
         chTicker.stop();
         btnSkip.setEnabled(false);
-        if(passed)
+        if(isPassed)
         {
             happy_end.start();
             rbProgress.getProgressDrawable().setTint(Color.GREEN);
@@ -97,17 +129,7 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
         afterTextChanged(etAnswer.getText());
     }*/
 
-    @Override
-    public void afterTextChanged(Editable s) {
-        if(s.length()==0) return;
-        try {
-            check(Integer.parseInt(s.toString()));
-        }
-        catch(NumberFormatException nex)
-        {
-            return;
-        }
-    }
+
     private void check(int num){
         boolean result= myTaskProgress.check(num);
         if(result){
@@ -127,13 +149,7 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
         }
     }
 
-    @Override
-    public void onChronometerTick(Chronometer chronometer) {
-        if(SystemClock.elapsedRealtime()>=chronometer.getBase())
-        {
-            done(false);
-        }
-    }
+
 
     private void failed() {
         Toast.makeText(this, "Keep trying...",Toast.LENGTH_LONG).show();
@@ -145,8 +161,8 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
 
         cancelPendingInsult();
 
-        Intent goToNextActivity = new Intent(getApplicationContext(), AlarmActivity.class);
-        startActivity(goToNextActivity);
+        Intent backToOpeningScreen = new Intent(getApplicationContext(), OpeningScreen.class);
+        startActivity(backToOpeningScreen);
     }
 
     private void cancelPendingInsult() {
@@ -155,13 +171,6 @@ public class RandomTaskActivity extends AppCompatActivity implements Chronometer
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(p);
     }
-
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
 
 }
