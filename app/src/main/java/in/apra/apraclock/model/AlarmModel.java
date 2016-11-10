@@ -52,7 +52,11 @@ public class AlarmModel {
         {
             calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
         }
-        alarmTime=calendar;
+        setAlarmTime(calendar);
+    }
+    public void setAlarmTime(Calendar time)
+    {
+        alarmTime=time;
     }
 
     /**
