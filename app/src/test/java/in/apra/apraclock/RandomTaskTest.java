@@ -4,7 +4,8 @@ import org.junit.Test;
 
 import in.apra.apraclock.tasks.RandomMathTask;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
