@@ -25,22 +25,22 @@ public class AlarmService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        sendNotification("Wake Up! Else your mom will yell at you!");
+        sendNotification(this,"Wake Up! Else your mom will yell at you!");
     }
 
 
-    private void sendNotification(String msg) {
+    static void sendNotification(Context ctx, String msg) {
 
         Log.d("AlarmService", "Preparing to send notification...: " + msg);
 
-        Intent intent = new Intent(this, RandomTaskActivity.class);
+        Intent intent = new Intent(ctx, RandomTaskActivity.class);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
                 intent, 0);
 
 
         NotificationCompat.Builder alamNotificationBuilder = new NotificationCompat.Builder(
-                this).setContentTitle("Alarm").setSmallIcon(R.mipmap.ic_launcher)
+                ctx).setContentTitle("Alarm").setSmallIcon(R.mipmap.ic_launcher)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                 .setContentText(msg);
 
@@ -53,14 +53,14 @@ public class AlarmService extends IntentService {
 
         alamNotificationBuilder.setSound(alarmUri, AudioManager.STREAM_ALARM);
 
-        NotificationManager alarmNotificationManager = (NotificationManager) this
+        NotificationManager alarmNotificationManager = (NotificationManager) ctx
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         alarmNotificationManager.notify(1, alamNotificationBuilder.build());
         Log.d("AlarmService", "Notification sent.");
 
         //since it is served, disable it
         AlarmModel m = new AlarmModel();
-        m.setAlarm(this,false);
-        m.save(this);
+        m.setAlarm(ctx,false);
+        m.save(ctx);
     }
 }

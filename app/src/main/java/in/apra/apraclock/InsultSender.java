@@ -21,6 +21,7 @@ public class InsultSender extends WakefulBroadcastReceiver {
                 "Dear Mom,\n I am not able to deal with my sleepy self.\nPlease help me wake up!!",
                 "apra@apra.in","gapra@tisb.ac.in");
 
+        AlarmService.sendNotification(context,"Sent e-mail to your mom, as you failed to wake up!");
         setResultCode(Activity.RESULT_OK);
     }
 

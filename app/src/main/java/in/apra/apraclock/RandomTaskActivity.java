@@ -1,7 +1,9 @@
 package in.apra.apraclock;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -160,9 +162,14 @@ public class RandomTaskActivity extends AppCompatActivity{
         Toast.makeText(this, "Not sending mail to your mom! Enjoy your day",Toast.LENGTH_LONG).show();
 
         cancelPendingInsult();
-
+        cancelNotification();
         Intent backToOpeningScreen = new Intent(getApplicationContext(), OpeningScreen.class);
         startActivity(backToOpeningScreen);
+    }
+
+    private void cancelNotification() {
+        NotificationManager alarmNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        alarmNotificationManager.cancel(1);
     }
 
     private void cancelPendingInsult() {

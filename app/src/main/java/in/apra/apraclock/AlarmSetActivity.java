@@ -9,6 +9,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import in.apra.apraclock.model.AlarmModel;
 
@@ -33,11 +34,16 @@ public class AlarmSetActivity extends AppCompatActivity implements View.OnTouchL
         //connect a change on switch to this.onCheckedChanged(..)
         swEnable.setOnCheckedChangeListener(this);
     }
-
+    void showToast()
+    {
+        if(model.isEnabled())
+            Toast.makeText(this, "Set alarm for "+model.getDateTimeAsString(),Toast.LENGTH_LONG).show();
+    }
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         model.setAlarm(this,isChecked);
         model.save(this);
+        showToast();
     }
 
     @Override
@@ -57,7 +63,9 @@ public class AlarmSetActivity extends AppCompatActivity implements View.OnTouchL
         model.setAlarmTime(hourOfDay,minute);
         model.save(this);
         tvTimeDay.setText(model.getDateTimeAsString());
-        if(model.isEnabled())
-            model.setAlarm(this,true);
+        if(model.isEnabled()) {
+            model.setAlarm(this, true);
+            showToast();
+        }
     }
 }
