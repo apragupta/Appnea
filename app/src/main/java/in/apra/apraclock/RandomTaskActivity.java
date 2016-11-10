@@ -157,7 +157,7 @@ public class RandomTaskActivity extends AppCompatActivity{
     }
 
     private void passed() {
-        Toast.makeText(this, "Not posting to facebook! Enjoy your day",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Not sending mail to your mom! Enjoy your day",Toast.LENGTH_LONG).show();
 
         cancelPendingInsult();
 

@@ -18,24 +18,6 @@ import android.util.Log;
 import in.apra.apraclock.model.AlarmModel;
 
 public class AlarmService extends IntentService {
-    @Override
-    public void onCreate() {
-        Log.d("AlarmService", "onCreate()");
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d("AlarmService", "onDestroy()");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-        Log.d("AlarmService", "onStart()");
-        super.onStart(intent, startId);
-    }
-
     public AlarmService() {
         super("Alarm Service");
     }
@@ -43,7 +25,7 @@ public class AlarmService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        sendNotification("Wake Up! Wake Up!");
+        sendNotification("Wake Up! Else your mom will yell at you!");
     }
 
 
