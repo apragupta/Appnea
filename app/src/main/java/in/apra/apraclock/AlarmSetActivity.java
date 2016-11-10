@@ -12,7 +12,8 @@ import android.widget.TimePicker;
 
 import in.apra.apraclock.model.AlarmModel;
 
-public class AlarmSetActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnTouchListener, TimePickerDialog.OnTimeSetListener {
+public class AlarmSetActivity extends AppCompatActivity implements View.OnTouchListener,
+        CompoundButton.OnCheckedChangeListener, TimePickerDialog.OnTimeSetListener {
     TextView tvTimeDay;
     Switch swEnable;
     AlarmModel model= new AlarmModel();
@@ -24,8 +25,12 @@ public class AlarmSetActivity extends AppCompatActivity implements CompoundButto
         swEnable = (Switch)findViewById(R.id.swEnable);
         model.load(this);
         tvTimeDay.setText(model.getDateTimeAsString());
-        tvTimeDay.setOnTouchListener(this);
         swEnable.setChecked(model.isEnabled());
+
+        //connect a touch event on tvTimeDay to this.OnTouch(..)
+        tvTimeDay.setOnTouchListener(this);
+
+        //connect a change on switch to this.onCheckedChanged(..)
         swEnable.setOnCheckedChangeListener(this);
     }
 

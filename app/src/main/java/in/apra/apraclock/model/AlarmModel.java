@@ -19,19 +19,16 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AlarmModel {
 
-    public static final String ALARM_ENABLED = "ALARM_ENABLED";
-    public static final String ALARM_TS="ALARM_TS";
-    public static final String ALARM_PREFS = "ALARM_PREFS";
-    static final SimpleDateFormat sdf= new SimpleDateFormat("h:mm a");
+    static final int TODAY=1;
+    static final int TOMORROW=2;
 
-    Calendar alarmTime=Calendar.getInstance();
+    //my properties
+    private Calendar alarmTime;
+    private boolean isEnabled;
 
-    boolean isEnabled;
-    enum AlarmDay{
-        TODAY("Today"),
-        TOMORROW("Tomorrow");
-        String tag;
-        AlarmDay(String tag){this.tag=tag;}
+    public AlarmModel() {
+        this.alarmTime=Calendar.getInstance();
+        isEnabled=false;
     }
 
     /**
@@ -42,14 +39,15 @@ public class AlarmModel {
     public void setAlarmTime(int hour, int minute)
     {
         Calendar calendar = Calendar.getInstance();
-
         //get current time
         long now= calendar.getTimeInMillis();
+
         //now setup for alarm time
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
+
         if(now>calendar.getTimeInMillis())
         {
             calendar.setTimeInMillis(calendar.getTimeInMillis()+24*60*60*1000);
@@ -59,31 +57,30 @@ public class AlarmModel {
 
     /**
      * Used to know the day (today or tomorrow) for this alarm
-     * @return
+     * @return TODAY or TOMORROW
      */
-    AlarmDay getAlarmDay()
+    private int getAlarmDay()
     {
         //Date now
         Calendar dateNow = Calendar.getInstance();
-        clearHHMMSS(dateNow);
+        setToBeginningOfDay(dateNow);
 
-        if(!isEnabled)
+        if(isEnabled==false)
         {
-            // The alarm may have been used in past, lets set it in current context
+            // The alarm may have been used few days ago, lets set it in current context
             setAlarmTime(alarmTime.get(Calendar.HOUR_OF_DAY),alarmTime.get(Calendar.MINUTE));
         }
-
-
         //Date of alarm
         Calendar dateThen = (Calendar) alarmTime.clone();
-        clearHHMMSS(dateThen);
+        setToBeginningOfDay(dateThen);
+
         if(dateThen.compareTo(dateNow)>0)
-            return AlarmDay.TOMORROW;
+            return TOMORROW;
         else
-            return AlarmDay.TODAY;
+            return TODAY;
     }
 
-    private void clearHHMMSS(Calendar dateNow) {
+    private void setToBeginningOfDay(Calendar dateNow) {
         dateNow.set(Calendar.HOUR_OF_DAY,0);
         dateNow.set(Calendar.MINUTE,0);
         dateNow.set(Calendar.SECOND,0);
@@ -97,9 +94,16 @@ public class AlarmModel {
     }
     public String getDateTimeAsString(){
         StringBuffer sb = new StringBuffer();
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+
         sb.append(sdf.format(alarmTime.getTime()))
-                .append(" ")
-                .append(getAlarmDay().tag);
+                .append(" ");
+
+        if(getAlarmDay()==TODAY)
+            sb.append("Today");
+        else
+            sb.append("Tomorrow");
+
         return sb.toString();
     }
 
@@ -117,19 +121,27 @@ public class AlarmModel {
 
     public void save(Context ctx)
     {
-        SharedPreferences.Editor ed= ctx.getSharedPreferences(ALARM_PREFS,MODE_PRIVATE).edit();
-        ed.putBoolean(ALARM_ENABLED,isEnabled);
-        ed.putLong(ALARM_TS,alarmTime.getTimeInMillis());
+        //start editing the shared preferences for this app.
+        SharedPreferences.Editor ed= ctx.getSharedPreferences("ALARM_PREFS",MODE_PRIVATE).edit();
+        ed.putBoolean("ALARM_ENABLED",isEnabled);
+        ed.putLong("ALARM_TS",alarmTime.getTimeInMillis());
         ed.commit();
 
     }
     public void load(Context ctx)
     {
-        SharedPreferences ed= ctx.getSharedPreferences(ALARM_PREFS,MODE_PRIVATE);
-        isEnabled=ed.getBoolean(ALARM_ENABLED,false);
+        SharedPreferences ed= ctx.getSharedPreferences("ALARM_PREFS",MODE_PRIVATE);
+
         Calendar c=Calendar.getInstance(); //now
-        long ts=ed.getLong(ALARM_TS,c.getTimeInMillis()+60*60*1000); //an hour later
+        long one_hour_from_now = c.getTimeInMillis()+ 60 * 60 * 1000;//an hour later
+
+        isEnabled=ed.getBoolean("ALARM_ENABLED",false);
+
+        long ts=ed.getLong("ALARM_TS", one_hour_from_now);
+
+
         c.setTimeInMillis(ts);
+
         if(isEnabled) {
             alarmTime = c;
         }else{
@@ -140,19 +152,19 @@ public class AlarmModel {
     /**
      *
      * @param ctx
-     * @param bSet true: set the alarm, false: clear it
+     * @param isSet true: set the alarm; false: clear it
      */
-    public void setAlarm(Context ctx, boolean bSet)
+    public void setAlarm(Context ctx, boolean isSet)
     {
         Intent myIntent = new Intent(ctx, AlarmReceiver.class);
         PendingIntent pi=PendingIntent.getBroadcast(ctx, 0, myIntent, 0);
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
-        if(bSet){
+        if(isSet){
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pi);
         }
         else {
             alarmManager.cancel(pi);
         }
-        setEnabled(bSet);
+        setEnabled(isSet);
     }
 }

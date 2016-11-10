@@ -24,7 +24,7 @@ public class OpeningScreen extends AppCompatActivity {
 
     public void changeScreen(View view) {
         Log.d("OpeningScreen"  , "change screen clicked");
-        Intent intent = new Intent(this, AlarmActivity.class);
+        Intent intent = new Intent(this, AlarmSetActivity.class);
         startActivity(intent);
 
     }
