@@ -40,6 +40,6 @@
         android:layout_marginTop="62dp"
         android:id="@+id/BtnCustomAlarm"
         android:background="@color/colorPrimary"
-        android:onClick="changeScreen (OpeningScreen)"
+        android:onClick="changeScreen"
         android:textColor="@android:color/white" />
 </RelativeLayout>
