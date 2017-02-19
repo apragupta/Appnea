@@ -13,19 +13,30 @@ public class SleepCycleModel {
     int INITIAL_MINS=14;
     int num_cycles=6;
 
-    public List<String> getWakeupTimes(Calendar fromTime)
+    public List<String> getWakeupTimeStr(Calendar fromTime)
     {
-        List<String> options = new ArrayList<String>();
+        List<Calendar> options=getWakeupTimes(fromTime);
+        List<String> ret = new ArrayList<String>();
+
+        AlarmModel m = new AlarmModel();
+        for(Calendar c:options)
+        {
+            m.setAlarmTime(c);
+            ret.add(m.getDateTimeAsString());
+        }
+        return ret;
+    }
+    public List<Calendar> getWakeupTimes(Calendar fromTime)
+    {
+        List<Calendar> options = new ArrayList<Calendar>();
         Calendar newTime=(Calendar )fromTime.clone();
 
         newTime.add(Calendar.MINUTE,INITIAL_MINS);
-
-        AlarmModel m = new AlarmModel();
         for(int i=1;i<=num_cycles;i++)
         {
             newTime.add(Calendar.MINUTE,CYCLE_MINS);
-            m.setAlarmTime(newTime);
-            options.add(m.getDateTimeAsString());
+            options.add(newTime);
+            newTime=(Calendar )newTime.clone();
         }
         return options;
     }
