@@ -3,8 +3,12 @@ package in.apra.apraclock.model;
 /**
  * Created by Apra G. on 11/10/2016.
  */
+import android.os.AsyncTask;
+import android.util.Log;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -18,10 +22,11 @@ import java.io.OutputStream;
 import java.security.Security;
 import java.util.Properties;
 
-public class GMailSender extends javax.mail.Authenticator {
+public class GMailSender extends AsyncTask<String,Void,Boolean> {
+    static String TAG=GMailSender.class.toString();
     private String mailhost = "smtp.gmail.com";
-    private String user;
-    private String password;
+    private String mUser;
+    private String mPassword;
     private Session session;
 //
 //    static {
@@ -29,8 +34,8 @@ public class GMailSender extends javax.mail.Authenticator {
 //    }
 
     public GMailSender(String user, String password) {
-        this.user = user;
-        this.password = password;
+        this.mUser = user;
+        this.mPassword = password;
         Properties props = new Properties();
   //      props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.host", mailhost);
@@ -44,14 +49,16 @@ public class GMailSender extends javax.mail.Authenticator {
 //        props.put("mail.smtp.socketFactory.fallback", "false");
 //        props.setProperty("mail.smtp.quitwait", "false");
 
-        session = Session.getDefaultInstance(props, this);
+        session = Session.getDefaultInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(mUser, mPassword);
+            }
+        });
     }
 
-    protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(user, password);
-    }
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients){
+    public synchronized boolean sendMail(String subject, String body, String sender, String recipients){
         try{
             MimeMessage message = new MimeMessage(session);
             DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
@@ -65,7 +72,18 @@ public class GMailSender extends javax.mail.Authenticator {
             Transport.send(message);
         }catch(Exception e){
             e.printStackTrace();
+            return false;
         }
+        return true;
+    }
+
+    @Override
+    protected Boolean doInBackground(String... params) {
+        if(params.length<4){
+            Log.e(TAG,"subject, body, sender, recipients must be specified");
+            return false;
+        }
+        return sendMail(params[0],params[1],params[2],params[3]);
     }
 
     public class ByteArrayDataSource implements DataSource {

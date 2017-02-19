@@ -24,7 +24,7 @@ public class SleepCycleTest {
         c.set(Calendar.MINUTE,0);
         c.set(Calendar.SECOND,0);
 
-        List<String> ops=m.getWakeupTimes(c);
+        List<String> ops=m.getWakeupTimeStr(c);
         assertTrue(ops.get(0).startsWith("9:44 PM To"));
         assertTrue(ops.get(1).startsWith("11:14 PM To"));
         assertTrue(ops.get(2).startsWith("12:44 AM To"));

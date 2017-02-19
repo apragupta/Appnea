@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -58,7 +60,10 @@ public class AlarmModel {
     {
         alarmTime=time;
     }
-
+    public Calendar getAlarmTime()
+    {
+        return  alarmTime;
+    }
     /**
      * Used to know the day (today or tomorrow) for this alarm
      * @return TODAY or TOMORROW
@@ -171,4 +176,36 @@ public class AlarmModel {
         }
         setEnabled(isSet);
     }
+
+    //region Preferences that user can change
+    public static String getPrefVal(Context ctx, String key)
+    {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(key, "");
+    }
+
+    public static boolean validatePrefs(Context context)
+    {
+        String user= getUserName(context);
+        String password= getPassword(context);
+        String dest_email= getDestEmails(context);
+        String emailContent= getEmailContent(context);
+        if(user.length()==0 || password.length()==0||dest_email.length()==0|| emailContent.length()==0)
+            return false;
+        else
+            return true;
+    }
+
+    public static String getPassword(Context context) {
+        return getPrefVal(context,"password_pref");
+    }
+    public static String getUserName(Context context) {
+        return getPrefVal(context,"username_pref");
+    }
+    public static String getDestEmails(Context context) {
+        return getPrefVal(context,"dest_email_pref");
+    }
+    public static String getEmailContent(Context context) {
+        return getPrefVal(context,"email_content_pref");
+    }
+    //endregion
 }
