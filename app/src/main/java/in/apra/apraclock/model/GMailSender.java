@@ -3,8 +3,15 @@ package in.apra.apraclock.model;
 /**
  * Created by Apra G. on 11/10/2016.
  */
+
 import android.os.AsyncTask;
 import android.util.Log;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -15,39 +22,23 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.Security;
-import java.util.Properties;
 
 public class GMailSender extends AsyncTask<String,Void,Boolean> {
-    static String TAG=GMailSender.class.toString();
+    static String TAG = GMailSender.class.toString();
     private String mailhost = "smtp.gmail.com";
     private String mUser;
     private String mPassword;
     private Session session;
-//
-//    static {
-//        Security.addProvider(new com.provider.JSSEProvider());
-//    }
 
     public GMailSender(String user, String password) {
         this.mUser = user;
         this.mPassword = password;
         Properties props = new Properties();
-  //      props.setProperty("mail.transport.protocol", "smtp");
         props.setProperty("mail.host", mailhost);
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.starttls.enable",true);
+        props.put("mail.smtp.starttls.enable", true);
         props.put("mail.smtp.ssl.trust", "*");
-//        props.put("mail.smtp.socketFactory.port", "587");
-//        props.put("mail.smtp.socketFactory.class",
-//                "javax.net.ssl.SSLSocketFactory");
-//        props.put("mail.smtp.socketFactory.fallback", "false");
-//        props.setProperty("mail.smtp.quitwait", "false");
 
         session = Session.getDefaultInstance(props, new Authenticator() {
             @Override
@@ -57,6 +48,17 @@ public class GMailSender extends AsyncTask<String,Void,Boolean> {
         });
     }
 
+    public boolean checkAuth() {
+        try {
+            session.getTransport("smtp").connect(mUser,mPassword);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 
     public synchronized boolean sendMail(String subject, String body, String sender, String recipients){
         try{

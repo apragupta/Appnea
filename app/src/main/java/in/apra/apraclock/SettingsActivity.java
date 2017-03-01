@@ -1,20 +1,25 @@
 package in.apra.apraclock;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import in.apra.apraclock.model.AlarmModel;
+import in.apra.apraclock.model.GMailSender;
 
 /**
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    static String TAG = SettingsActivity.class.toString();
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -73,16 +78,48 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(AlarmModel.validatePrefs(this)) {
-                    this.finish();
-                    return true;
+                try{
+                    AlarmModel.validatePrefs(this);
+                    checkAuthUI();
                 }
-                else{
-                    Toast.makeText(this,"Without proper settings mail sending feature will not work !" ,Toast.LENGTH_LONG).show();
-                    return false;
+                catch(Exception ex)
+                {
+                    Toast.makeText(this,ex.getMessage() ,Toast.LENGTH_LONG).show();
                 }
-
+                return false;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void checkAuthUI() {
+        final ProgressDialog dialog = new ProgressDialog(this);
+        final Activity activity=this;
+        //override GMailSender to show progress bar
+        GMailSender checker= new GMailSender(AlarmModel.getUserName(this),AlarmModel.getPassword(this)) {
+            @Override
+            protected void onPreExecute(){
+                dialog.setTitle("Validating...");
+                dialog.setMessage("Checking access to google account...");
+                dialog.show();
+            }
+            @Override
+            protected Boolean doInBackground(String... params) {
+                Log.e(TAG,"Checking access to google account...");
+                return checkAuth();
+            }
+            @Override
+            protected void onPostExecute(Boolean result){
+                dialog.dismiss();
+                if(result) {
+                    activity.finish();
+                    Toast.makeText(activity,"Validated GMail Credentials" ,Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    Toast.makeText(activity,"Could not validate GMail credentials" ,Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+        checker.execute();
     }
 }
