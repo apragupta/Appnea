@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import android.util.Patterns;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -183,16 +183,19 @@ public class AlarmModel {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getString(key, "");
     }
 
-    public static boolean validatePrefs(Context context)
+    public static boolean validatePrefs(Context context) throws Exception
     {
         String user= getUserName(context);
         String password= getPassword(context);
         String dest_email= getDestEmails(context);
-        String emailContent= getEmailContent(context);
-        if(user.length()==0 || password.length()==0||dest_email.length()==0|| emailContent.length()==0)
-            return false;
-        else
-            return true;
+        String emailContent= getEmailContent(context).trim();
+
+        if(password.length()==0) throw new Exception("Password not supplied");
+        if(!Patterns.EMAIL_ADDRESS.matcher(user).matches()) throw new Exception("User name is not a valid e-mail address");
+        if(!Patterns.EMAIL_ADDRESS.matcher(dest_email).matches()) throw new Exception("Destination e-mail address is invalid");
+        if(emailContent.length()<10) throw new Exception("E-Mail message content is too short");
+
+        return true;
     }
 
     public static String getPassword(Context context) {

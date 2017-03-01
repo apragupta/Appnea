@@ -54,10 +54,15 @@ public class OpeningScreen extends AppCompatActivity implements SelectWakeTimeDl
             }
         });
 
-        if(!AlarmModel.validatePrefs(this))
+        //if any preference is invalid show the settings activity first
+        try{
+            AlarmModel.validatePrefs(this);
+        }
+        catch (Exception ex)
         {
             startActivity(new Intent(this, SettingsActivity.class));
         }
+
     }
 
     public void sleepNow(View view) {
