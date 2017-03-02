@@ -24,7 +24,7 @@ public class InsultSender extends WakefulBroadcastReceiver {
         GMailSender sender = new GMailSender(user,password);
         sender.execute("I need help with waking up",emailContent,
                 user,dest_email);
-        AlarmService.sendNotification(context,"Sent e-mail to your mom, as you failed to wake up!");
+        AlarmService.sendNotification(context,"Sent e-mail insult as you failed to wake up!");
         setResultCode(Activity.RESULT_OK);
     }
 }
