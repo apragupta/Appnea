@@ -25,7 +25,7 @@ public class AlarmService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        sendNotification(this,"Wake Up! Else your mom will yell at you!");
+        sendNotification(this,"Wake Up! Tap here to start solving math puzzles");
     }
 
 

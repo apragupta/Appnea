@@ -101,7 +101,7 @@ public class OpeningScreen extends AppCompatActivity implements SelectWakeTimeDl
                 OnAlarmTimeSet();
             }
         }, model.getHour(), model.getMinute(), false);
-        tpDlg.setTitle("Set alarm time");
+        tpDlg.setTitle("When do you want to wakeup?");
         tpDlg.show();
     }
 
@@ -124,12 +124,12 @@ public class OpeningScreen extends AppCompatActivity implements SelectWakeTimeDl
 
     //reuse code
     private void OnAlarmTimeSet() {
-        model.save(this);
         tvTimeDay.setText(model.getDateTimeAsString());
-        if(model.isEnabled()) {
-            model.setAlarm(this, true);
-            showToast();
-        }
+        swEnable.setChecked(true);
+        model.setAlarm(this, true);
+        model.save(this);
+        showToast();
+
     }
     private void showToast()
     {

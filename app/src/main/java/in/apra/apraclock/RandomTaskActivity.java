@@ -12,7 +12,6 @@ import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -159,7 +158,7 @@ public class RandomTaskActivity extends AppCompatActivity{
     }
 
     private void passed() {
-        Toast.makeText(this, "Not sending mail to your mom! Enjoy your day",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Good job! Now stay awake!!",Toast.LENGTH_LONG).show();
 
         cancelPendingInsult();
         cancelNotification();
