@@ -24,7 +24,7 @@
             android:enabled="true" />
 
         <receiver android:name=".AlarmReceiver" />
-        <receiver android:name=".InsultSender" />
+        <receiver android:name=".EmbarrassmentSender" />
 
         <activity
             android:name=".RandomTaskActivity"

@@ -29,14 +29,14 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:key="dest_email_pref"
-            android:summary="Enter the e-mail address(es) to send mails to when you are not able to wakeup"
+            android:summary="Enter the email address(es) to send mails to when you are not able to wakeup"
             android:title="Send To" />
         <EditTextPreference
             android:defaultValue="Dear Mom,\n I am not able to deal with my sleepy self.\nPlease help me wake up!!"
             android:selectAllOnFocus="true"
             android:singleLine="false"
-            android:title="E-mail content"
+            android:title="Email content"
             android:key="email_content_pref"
-            android:summary="Text for the insult e-mail" />
+            android:summary="Text for the email" />
     </PreferenceCategory>
 </PreferenceScreen>

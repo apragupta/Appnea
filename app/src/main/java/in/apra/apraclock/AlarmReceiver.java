@@ -35,7 +35,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     private void setAlarm2MinsLater(Context context) {
-        Intent myIntent = new Intent(context, InsultSender.class);
+        Intent myIntent = new Intent(context, EmbarrassmentSender.class);
         PendingIntent p=PendingIntent.getBroadcast(context, 0, myIntent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();

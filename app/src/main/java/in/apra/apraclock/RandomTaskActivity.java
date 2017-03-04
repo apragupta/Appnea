@@ -160,7 +160,7 @@ public class RandomTaskActivity extends AppCompatActivity{
     private void passed() {
         Toast.makeText(this, "Good job! Now stay awake!!",Toast.LENGTH_LONG).show();
 
-        cancelPendingInsult();
+        cancelPendingEmbarrassment();
         cancelNotification();
         Intent backToOpeningScreen = new Intent(getApplicationContext(), OpeningScreen.class);
         startActivity(backToOpeningScreen);
@@ -171,8 +171,8 @@ public class RandomTaskActivity extends AppCompatActivity{
         alarmNotificationManager.cancel(1);
     }
 
-    private void cancelPendingInsult() {
-        Intent myIntent = new Intent(this, InsultSender.class);
+    private void cancelPendingEmbarrassment() {
+        Intent myIntent = new Intent(this, EmbarrassmentSender.class);
         PendingIntent p=PendingIntent.getBroadcast(this, 0, myIntent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(p);
