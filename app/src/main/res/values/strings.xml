@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ApraClock</string>
+    <string name="app_name">Smart Alarm</string>
     <string name="wakeDlgTitle">Choose a wakeup time</string>
     <string name="wakeDlgOK">Set Alarm</string>
     <string name="wakeDlgCancel">Cancel</string>
