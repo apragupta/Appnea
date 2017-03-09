@@ -16,6 +16,15 @@ import in.apra.apraclock.AlarmReceiver;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
+ * AlarmModel represents the state of a single alarm:
+ * alarm time and if it is enabled or disabled
+ * It also implements all the functionality relates to
+ * -setting alarms
+ * -core logic of converting users selection to a future alarm time
+ * -creating user displayable text for alarm time
+ * -storing values in shared preferences
+ * -validating preferences
+ *
  * Created by Apra G. on 11/6/2016.
  */
 
@@ -24,9 +33,13 @@ public class AlarmModel {
     static final int TODAY = 1;
     static final int TOMORROW = 2;
 
-    //my properties
+    //Current state of this alarm
     private Calendar alarmTime;
     private boolean isEnabled;
+
+    /**
+     * constructor assumes the alarm is for current time and disabled
+     */
 
     public AlarmModel() {
         this.alarmTime = Calendar.getInstance();
@@ -34,8 +47,30 @@ public class AlarmModel {
     }
 
     /**
-     * Used to change the data and time of this alarm
-     *
+     * setter and getter for alarm time
+     * @param time
+     */
+    public void setAlarmTime(Calendar time) {
+        alarmTime = time;
+    }
+    public Calendar getAlarmTime() {
+        return alarmTime;
+    }
+
+    /**
+     * Keep it private as this class decides when to enable it
+     * @param enabled
+     */
+    private void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    /**
+     * Used to change the date and time of current alarm after user selects on GUI
      * @param hour
      * @param minute
      */
@@ -43,30 +78,21 @@ public class AlarmModel {
         Calendar calendar = Calendar.getInstance();
         //get current time
         long now = calendar.getTimeInMillis();
-
         //now setup for alarm time
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
+        //if that time is in past, add 24 hours to it to make it tomorrow
         if (now > calendar.getTimeInMillis()) {
             calendar.setTimeInMillis(calendar.getTimeInMillis() + 24 * 60 * 60 * 1000);
         }
         setAlarmTime(calendar);
     }
 
-    public void setAlarmTime(Calendar time) {
-        alarmTime = time;
-    }
-
-    public Calendar getAlarmTime() {
-        return alarmTime;
-    }
-
     /**
      * Used to know the day (today or tomorrow) for this alarm
-     *
      * @return TODAY or TOMORROW
      */
     private int getAlarmDay() {
@@ -103,6 +129,10 @@ public class AlarmModel {
         return alarmTime.get(Calendar.MINUTE);
     }
 
+    /**
+     * Generates a user displayable string for an alarm
+     * @return alarm time as a string
+     */
     public String getDateTimeAsString() {
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
@@ -119,18 +149,9 @@ public class AlarmModel {
     }
 
     /**
-     * Keep it private
-     *
-     * @param enabled
+     * save the alarm time and its status to shared preferences
+     * @param ctx
      */
-    private void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
     public void save(Context ctx) {
         //start editing the shared preferences for this app.
         SharedPreferences.Editor ed = ctx.getSharedPreferences("ALARM_PREFS", MODE_PRIVATE).edit();
@@ -140,6 +161,10 @@ public class AlarmModel {
 
     }
 
+    /**
+     * load the alarm time and status from shared preferences
+     * @param ctx
+     */
     public void load(Context ctx) {
         SharedPreferences ed = ctx.getSharedPreferences("ALARM_PREFS", MODE_PRIVATE);
 
@@ -161,16 +186,25 @@ public class AlarmModel {
     }
 
     /**
-     * @param ctx
-     * @param isSet true: set the alarm; false: clear it
+     * Sets the alarm with Alarm manager class in android SDK
+     * @param ctx the Activity in whose context this function is run
+     * @param isSet true: set the alarm; false: clear the alarm
      */
     public void setAlarm(Context ctx, boolean isSet) {
+        //create a intent for the receiver of this alarm (callback)
         Intent myIntent = new Intent(ctx, AlarmReceiver.class);
+
+        //Since the alarm occurs at a different time we create a Pending intent, wrapping the actual intent
         PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, myIntent, 0);
+
+        //Get an instance of Alarm manager service
         AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
+
         if (isSet) {
+            //set the new alarm
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pi);
         } else {
+            //clear a alarm matching this pending intent
             alarmManager.cancel(pi);
         }
         setEnabled(isSet);
@@ -181,19 +215,32 @@ public class AlarmModel {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getString(key, "");
     }
 
+    /**
+     * Validates if the user settings are correct
+     * @param context The activity under whose context this function runs.
+     * @return true: valid, false: invlaid
+     * @throws Exception the text of exception describes whats wrong
+     */
     public static boolean validatePrefs(Context context) throws Exception {
+        //fetch values from preferences using private functions
         String user = getUserName(context);
         String password = getPassword(context);
         String dest_email = getDestEmails(context);
         String emailContent = getEmailContent(context).trim();
 
+        //check password length has to be more than 0
         if (password.length() == 0) throw new Exception("Password not supplied");
+
+        //users gmail address and destination address must match the e-mail address pattern
         if (!Patterns.EMAIL_ADDRESS.matcher(user).matches())
             throw new Exception("User name is not a valid e-mail address");
         if (!Patterns.EMAIL_ADDRESS.matcher(dest_email).matches())
             throw new Exception("Destination e-mail address is invalid");
+
+        //the EMail content must have at least 10 characters
         if (emailContent.length() < 10) throw new Exception("E-Mail message content is too short");
 
+        //if we did nto throw any exceptions, we are good, return true
         return true;
     }
 

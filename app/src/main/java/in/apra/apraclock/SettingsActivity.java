@@ -74,16 +74,29 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    /**
+     * Called when user tries to move back from settings screen
+     * @param item: the menu that user selects to
+     * @return true: continue with user action, false: abort
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                //if user is moving back to home scree from settings screen
                 try{
+                    //validate the preferences
                     AlarmModel.validatePrefs(this);
+
+                    //start google credentials validation with a process dialog
                     checkAuthUI();
+                    //if the above is successful it will to the home screen
                 }
                 catch(Exception ex)
                 {
+                    //if we catch any exception, display it to user,
+                    // it could be an exception we threw from elsewhere
                     Toast.makeText(this,ex.getMessage() ,Toast.LENGTH_LONG).show();
                 }
                 return false;
