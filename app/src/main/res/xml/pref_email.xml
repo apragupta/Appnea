@@ -23,7 +23,7 @@
             android:summary="Enter the GMail password for above username"
             android:password="true" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Insult Settings">
+    <PreferenceCategory android:title="EMail Settings">
 
         <EditTextPreference
             android:selectAllOnFocus="true"
@@ -37,6 +37,6 @@
             android:singleLine="false"
             android:title="Email content"
             android:key="email_content_pref"
-            android:summary="Text for the email" />
+            android:summary="Text for the embarrassing email" />
     </PreferenceCategory>
 </PreferenceScreen>
