@@ -154,7 +154,8 @@ public class AlarmModel {
      */
     public void save(Context ctx) {
         //start editing the shared preferences for this app.
-        SharedPreferences.Editor ed = ctx.getSharedPreferences("ALARM_PREFS", MODE_PRIVATE).edit();
+        SharedPreferences.Editor ed
+                = ctx.getSharedPreferences("ALARM_PREFS", MODE_PRIVATE).edit();
         ed.putBoolean("ALARM_ENABLED", isEnabled);
         ed.putLong("ALARM_TS", alarmTime.getTimeInMillis());
         ed.commit();
